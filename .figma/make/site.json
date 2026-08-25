@@ -1,0 +1,10 @@
+{
+  "description": "Create engaging and animated portfolio websites for children, featuring dynamic effects and interactive elements that captivate and inspire creativity.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
