@@ -367,8 +367,8 @@ function Nav() {
     <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       style={{ background: scrolled ? "rgba(5,8,16,0.92)" : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? "1px solid rgba(59,130,246,0.1)" : "none", padding: scrolled ? "12px 0" : "20px 0" }}>
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-        <a href="https://designjoom.in" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <img src={djLogo} alt="DesignJoom" style={{ height: 28, filter: "invert(1) brightness(2)", opacity: 0.9, transition: "opacity 0.2s" }}
+        <a href="https://designjoom.com" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+          <img src={djLogo} alt="DesignJoom" style={{ height: 28, filter: "invert(1) sepia(1) saturate(6) hue-rotate(195deg) brightness(1.4)", opacity: 1, transition: "opacity 0.2s" }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "1"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.9"; }} />
         </a>
@@ -420,9 +420,6 @@ function Hero() {
             <Typewriter words={ROLES} />
           </div>
 
-          <p className="mt-6 max-w-lg" style={{ color: "#6b7fa8", lineHeight: 1.8, fontSize: "0.95rem" }}>
-            AI Growth, Digital Strategy and UX/Product leader with <strong style={{ color: "#a8b8d8" }}>14+ years</strong> spanning Google, European product startups, healthcare and biopharma. Building digital products, acquisition systems and AI-powered workflows.
-          </p>
 
           <div className="flex flex-wrap gap-3 mt-8">
             <a href="#contact" className="flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300"
@@ -443,7 +440,7 @@ function Hero() {
             {[
               { icon: Link, href: "https://www.linkedin.com/in/aigrowthandautomationleader/", label: "LinkedIn" },
               { icon: GitFork, href: "https://github.com/ajayspi", label: "GitHub" },
-              { icon: Globe, href: "https://designjoom.in", label: "Website" },
+              { icon: Globe, href: "https://designjoom.com", label: "Website" },
             ].map(({ icon: Icon, href, label }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer" title={label}
                 className="transition-all duration-200" style={{ color: "#6b7fa8" }}
@@ -955,13 +952,13 @@ function Contact() {
         </div>
         {/* DesignJoom brand logo */}
         <div className="flex justify-center mt-8">
-          <a href="https://designjoom.in" target="_blank" rel="noopener noreferrer"
+          <a href="https://designjoom.com" target="_blank" rel="noopener noreferrer"
             className="glass flex items-center gap-3 px-5 py-3 rounded-2xl transition-all duration-300"
             style={{ border: "1px solid rgba(59,130,246,0.15)" }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.4)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.15)"; (e.currentTarget as HTMLElement).style.transform = ""; }}>
-            <img src={djLogo} alt="DesignJoom" style={{ height: 30, filter: "invert(1) brightness(2)", opacity: 0.85 }} />
-            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.65rem", color: "#6b7fa8", letterSpacing: "0.1em" }}>designjoom.in</span>
+            <img src={djLogo} alt="DesignJoom" style={{ height: 30, filter: "invert(1) sepia(1) saturate(6) hue-rotate(195deg) brightness(1.4)", opacity: 1 }} />
+            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.65rem", color: "#6b7fa8", letterSpacing: "0.1em" }}>designjoom.com</span>
           </a>
         </div>
 
@@ -994,8 +991,8 @@ function Footer() {
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <span style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: "1.1rem" }}><span className="text-shimmer">Av. Ajay Kiran</span></span>
           <span style={{ color: "#2a3450", fontSize: "0.8rem" }}>·</span>
-          <a href="https://designjoom.in" target="_blank" rel="noopener noreferrer">
-            <img src={djLogo} alt="DesignJoom" style={{ height: 22, filter: "invert(1) brightness(1.8)", opacity: 0.55, transition: "opacity 0.2s" }}
+          <a href="https://designjoom.com" target="_blank" rel="noopener noreferrer">
+            <img src={djLogo} alt="DesignJoom" style={{ height: 22, filter: "invert(1) sepia(1) saturate(5) hue-rotate(195deg) brightness(1.3)", opacity: 0.8, transition: "opacity 0.2s" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.9"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.55"; }} />
           </a>
