@@ -515,88 +515,90 @@ function CrawlStrip() {
   );
 }
 
-// ─── Metrics — Bento Grid ─────────────────────────────────────────────────────
+// ─── Metrics — Compact Viewport-fit ──────────────────────────────────────────
 
 function Metrics() {
-  const HERO = [
-    { value: 14, suffix: "+", label: "Years Experience", sub: "Google · Startups · Healthcare", icon: Star, color: P.blue },
-    { value: 180, suffix: "%+", label: "Organic Traffic Growth", sub: "SEO/SEM across international clients", icon: TrendingUp, color: P.green },
-  ];
-  const SMALL = [
-    { value: 60900, suffix: "+", label: "Video Views", icon: BarChart3, color: P.violet },
-    { value: 2534, suffix: "", label: "New Users", icon: Users, color: P.cyan },
-    { value: 433, suffix: "", label: "WhatsApp Conversions", icon: Zap, color: P.amber },
-    { value: 20, suffix: "+", label: "Global Clients", icon: Globe, color: P.pink },
+  const ALL = [
+    { value: 14,    suffix: "+",   label: "Years Experience",      sub: "Google · Startups · Healthcare", icon: Star,     color: P.blue,   chart: "area", data: GROWTH_DATA, key: "users" },
+    { value: 180,   suffix: "%+",  label: "Organic Traffic Growth", sub: "SEO / SEM · 10+ years",         icon: TrendingUp,color: P.green,  chart: "line", data: GROWTH_DATA, key: "growth" },
+    { value: 60900, suffix: "+",   label: "Video Views",            sub: "Cross-platform",                icon: BarChart3, color: P.violet, chart: null,   data: null,        key: null },
+    { value: 2534,  suffix: "",    label: "New Users",              sub: "IR4U digital ecosystem",        icon: Users,     color: P.cyan,   chart: null,   data: null,        key: null },
+    { value: 433,   suffix: "",    label: "WhatsApp Conversions",   sub: "Instagram → WhatsApp",          icon: Zap,       color: P.amber,  chart: null,   data: null,        key: null },
+    { value: 20,    suffix: "+",   label: "Global Clients",         sub: "India · Germany · USA · UAE",   icon: Globe,     color: P.pink,   chart: null,   data: null,        key: null },
   ];
 
   return (
-    <section id="metrics" style={{ padding: "100px 0", background: "radial-gradient(ellipse 80% 40% at 50% 100%,rgba(124,58,237,0.06) 0%,transparent 70%)" }}>
+    <section id="metrics" style={{ padding: "56px 0 60px", background: "radial-gradient(ellipse 80% 50% at 50% 100%,rgba(124,58,237,0.05) 0%,transparent 70%)" }}>
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16 reveal">
-          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.72rem", color: P.blue, letterSpacing: "0.2em", marginBottom: 12 }}>IMPACT METRICS</div>
-          <h2 style={{ fontFamily: "'Sora',sans-serif", fontSize: "clamp(1.8rem,4vw,2.8rem)", fontWeight: 800, color: "#f0f4ff" }}>
-            Numbers That<br /><span className="text-shimmer">Tell the Story</span>
-          </h2>
+
+        {/* Header — compact */}
+        <div className="flex items-center justify-between mb-8 reveal">
+          <div>
+            <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.65rem", color: P.blue, letterSpacing: "0.2em", marginBottom: 4 }}>IMPACT METRICS</div>
+            <h2 style={{ fontFamily: "'Sora',sans-serif", fontSize: "clamp(1.4rem,2.5vw,1.9rem)", fontWeight: 800, color: "#f0f4ff", lineHeight: 1.1 }}>
+              Numbers That <span className="text-shimmer">Tell the Story</span>
+            </h2>
+          </div>
+          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.65rem", color: "#4a5a78", letterSpacing: "0.1em" }}>14+ YRS · 6 PROJECTS · 5 COUNTRIES</div>
         </div>
 
-        {/* Bento grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(12,1fr)", gridTemplateRows: "auto auto", gap: 16, minWidth: 0 }}>
-
-          {/* Hero metric 1 — large card with mini area chart */}
-          <div className="glass card-hover reveal" style={{ gridColumn: "1 / 7", gridRow: "1", borderRadius: 20, padding: 28, border: `1px solid ${P.blue}22`, position: "relative", overflow: "hidden", transitionDelay: "0ms" }}>
-            <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", background: P.blue, opacity: 0.05, filter: "blur(50px)" }} />
-            <Star size={18} style={{ color: P.blue, marginBottom: 10 }} />
-            <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: "clamp(2.6rem,5vw,4rem)", color: P.blue, lineHeight: 1 }}>
-              <Counter value={14} suffix="+" />
-            </div>
-            <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "1rem", color: "#d8e4ff", marginTop: 6 }}>{HERO[0].label}</div>
-            <div style={{ fontSize: "0.78rem", color: "#6b7fa8", marginTop: 4 }}>{HERO[0].sub}</div>
-            <div style={{ marginTop: 20, height: 80, minHeight: 80 }}>
-              <ResponsiveContainer width="100%" height={80} minWidth={0}>
-                <AreaChart data={GROWTH_DATA} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                  <defs>
-                    <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={P.blue} stopOpacity={0.35} />
-                      <stop offset="100%" stopColor={P.blue} stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <Area type="monotone" dataKey="users" stroke={P.blue} strokeWidth={2} fill="url(#blueGrad)" dot={false} isAnimationActive={false} />
-                  <Tooltip {...tooltipStyle} formatter={(v) => [`${v} users`, "New Users"]} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Hero metric 2 — growth chart */}
-          <div className="glass card-hover reveal" style={{ gridColumn: "7 / 13", gridRow: "1", borderRadius: 20, padding: 28, border: `1px solid ${P.green}22`, position: "relative", overflow: "hidden", transitionDelay: "80ms" }}>
-            <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", background: P.green, opacity: 0.05, filter: "blur(50px)" }} />
-            <TrendingUp size={18} style={{ color: P.green, marginBottom: 10 }} />
-            <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: "clamp(2.6rem,5vw,4rem)", color: P.green, lineHeight: 1 }}>
-              <Counter value={180} suffix="%+" />
-            </div>
-            <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "1rem", color: "#d8e4ff", marginTop: 6 }}>Organic Traffic Growth</div>
-            <div style={{ fontSize: "0.78rem", color: "#6b7fa8", marginTop: 4 }}>SEO/SEM across 10+ years</div>
-            <div style={{ marginTop: 20, height: 80, minHeight: 80 }}>
-              <ResponsiveContainer width="100%" height={80} minWidth={0}>
-                <LineChart data={GROWTH_DATA} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                  <Line type="monotone" dataKey="growth" stroke={P.green} strokeWidth={2} dot={false} isAnimationActive={false} />
-                  <Tooltip {...tooltipStyle} formatter={(v) => [`${v}%`, "Growth"]} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Small metric cards */}
-          {SMALL.map((m, i) => {
+        {/* 3-column grid — two rows of 3 */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, minWidth: 0 }}>
+          {ALL.map((m, i) => {
             const Icon = m.icon;
             return (
-              <div key={i} className="glass card-hover reveal scan-effect" style={{ gridColumn: `${1 + i * 3} / ${4 + i * 3}`, gridRow: "2", borderRadius: 16, padding: "20px 20px 16px", border: `1px solid ${m.color}18`, position: "relative", overflow: "hidden", transitionDelay: `${160 + i * 60}ms` }}>
-                <div style={{ position: "absolute", top: -20, right: -20, width: 80, height: 80, borderRadius: "50%", background: m.color, opacity: 0.06, filter: "blur(20px)" }} />
-                <Icon size={16} style={{ color: m.color, marginBottom: 10 }} />
-                <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: "clamp(1.6rem,3vw,2.2rem)", color: m.color, lineHeight: 1 }}>
+              <div key={i} className="glass card-hover reveal" style={{
+                borderRadius: 14,
+                padding: "16px 18px",
+                border: `1px solid ${m.color}1a`,
+                position: "relative",
+                overflow: "hidden",
+                transitionDelay: `${i * 55}ms`,
+                minWidth: 0,
+              }}>
+                {/* Glow orb */}
+                <div style={{ position: "absolute", top: -16, right: -16, width: 80, height: 80, borderRadius: "50%", background: m.color, opacity: 0.06, filter: "blur(24px)" }} />
+
+                {/* Top row — icon + label */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 8, background: `${m.color}14`, border: `1px solid ${m.color}22`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Icon size={13} style={{ color: m.color }} />
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 600, fontSize: "0.72rem", color: "#c8d8f0", lineHeight: 1.2 }}>{m.label}</div>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.57rem", color: "#4a5a78", marginTop: 1 }}>{m.sub}</div>
+                  </div>
+                </div>
+
+                {/* Number */}
+                <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: "clamp(1.6rem,2.8vw,2.2rem)", color: m.color, lineHeight: 1 }}>
                   <Counter value={m.value} suffix={m.suffix} />
                 </div>
-                <div style={{ fontSize: "0.78rem", color: "#6b7fa8", marginTop: 6 }}>{m.label}</div>
+
+                {/* Inline sparkline for the two chart cards */}
+                {m.chart && m.data && m.key && (
+                  <div style={{ marginTop: 10, height: 44, minHeight: 44 }}>
+                    <ResponsiveContainer width="100%" height={44} minWidth={0}>
+                      {m.chart === "area" ? (
+                        <AreaChart data={m.data} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+                          <defs>
+                            <linearGradient id={`grad-${i}`} x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor={m.color} stopOpacity={0.3} />
+                              <stop offset="100%" stopColor={m.color} stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <Area type="monotone" dataKey={m.key} stroke={m.color} strokeWidth={1.5} fill={`url(#grad-${i})`} dot={false} isAnimationActive={false} />
+                          <Tooltip {...tooltipStyle} formatter={(v) => [`${v}`, m.label]} />
+                        </AreaChart>
+                      ) : (
+                        <LineChart data={m.data} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+                          <Line type="monotone" dataKey={m.key} stroke={m.color} strokeWidth={1.5} dot={false} isAnimationActive={false} />
+                          <Tooltip {...tooltipStyle} formatter={(v) => [`${v}%`, m.label]} />
+                        </LineChart>
+                      )}
+                    </ResponsiveContainer>
+                  </div>
+                )}
               </div>
             );
           })}
