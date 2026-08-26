@@ -3,7 +3,8 @@ import Lenis from "@studio-freight/lenis";
 import {
   Mail, Phone, ExternalLink, Link, GitFork,
   ChevronDown, Zap, Brain, TrendingUp, Layers, Star,
-  Globe, Award, Users, BarChart3, Target, Cpu
+  Globe, Award, Users, BarChart3, Target, Cpu,
+  Home, UserCircle, Briefcase, FolderOpen
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, RadarChart, Radar,
@@ -244,8 +245,8 @@ function NeuralCanvas() {
         if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
         n.pulse += 0.022;
         const dx = mx - n.x, dy = my - n.y, dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 220 && dist > 0) { n.vx += (dx/dist)*0.01; n.vy += (dy/dist)*0.01; }
-        n.vx *= 0.993; n.vy *= 0.993;
+        if (dist < 300 && dist > 0) { n.vx += (dx/dist)*0.028; n.vy += (dy/dist)*0.028; }
+        n.vx *= 0.96; n.vy *= 0.96;
       });
 
       for (let i = 0; i < nodes.length; i++) {
@@ -285,9 +286,9 @@ function NeuralCanvas() {
       const r = canvas.getBoundingClientRect();
       mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top };
     };
-    canvas.addEventListener("mousemove", onMouse);
+    window.addEventListener("mousemove", onMouse);
     draw();
-    return () => { cancelAnimationFrame(animRef.current); window.removeEventListener("resize", resize); canvas.removeEventListener("mousemove", onMouse); };
+    return () => { cancelAnimationFrame(animRef.current); window.removeEventListener("resize", resize); window.removeEventListener("mousemove", onMouse); };
   }, []);
 
   return <canvas ref={canvasRef} id="neural-canvas" />;
@@ -539,7 +540,7 @@ function Metrics() {
         </div>
 
         {/* Bento grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(12,1fr)", gridTemplateRows: "auto auto", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(12,1fr)", gridTemplateRows: "auto auto", gap: 16, minWidth: 0 }}>
 
           {/* Hero metric 1 — large card with mini area chart */}
           <div className="glass card-hover reveal" style={{ gridColumn: "1 / 7", gridRow: "1", borderRadius: 20, padding: 28, border: `1px solid ${P.blue}22`, position: "relative", overflow: "hidden", transitionDelay: "0ms" }}>
@@ -551,7 +552,7 @@ function Metrics() {
             <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "1rem", color: "#d8e4ff", marginTop: 6 }}>{HERO[0].label}</div>
             <div style={{ fontSize: "0.78rem", color: "#6b7fa8", marginTop: 4 }}>{HERO[0].sub}</div>
             <div style={{ marginTop: 20, height: 80, minHeight: 80 }}>
-              <ResponsiveContainer width="100%" height={80}>
+              <ResponsiveContainer width="100%" height={80} minWidth={0}>
                 <AreaChart data={GROWTH_DATA} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                   <defs>
                     <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
@@ -576,7 +577,7 @@ function Metrics() {
             <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "1rem", color: "#d8e4ff", marginTop: 6 }}>Organic Traffic Growth</div>
             <div style={{ fontSize: "0.78rem", color: "#6b7fa8", marginTop: 4 }}>SEO/SEM across 10+ years</div>
             <div style={{ marginTop: 20, height: 80, minHeight: 80 }}>
-              <ResponsiveContainer width="100%" height={80}>
+              <ResponsiveContainer width="100%" height={80} minWidth={0}>
                 <LineChart data={GROWTH_DATA} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                   <Line type="monotone" dataKey="growth" stroke={P.green} strokeWidth={2} dot={false} isAnimationActive={false} />
                   <Tooltip {...tooltipStyle} formatter={(v) => [`${v}%`, "Growth"]} />
@@ -618,7 +619,7 @@ function ImpactDashboard() {
           </h2>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, minWidth: 0 }}>
 
           {/* Project Impact Bar Chart */}
           <div className="glass-bright reveal" style={{ borderRadius: 20, padding: 28, border: `1px solid ${P.blue}18`, transitionDelay: "0ms" }}>
@@ -626,7 +627,7 @@ function ImpactDashboard() {
               <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "0.9rem", color: "#d8e4ff" }}>Project Reach</div>
               <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.65rem", color: "#6b7fa8", marginTop: 3 }}>Video views (K) across projects</div>
             </div>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={220} minWidth={0}>
               <BarChart data={PROJECT_IMPACT} margin={{ top: 4, right: 4, bottom: 0, left: -20 }} barSize={18}>
                 <CartesianGrid vertical={false} stroke="rgba(59,130,246,0.07)" />
                 <XAxis dataKey="name" tick={{ fill: "#6b7fa8", fontSize: 11, fontFamily: "'JetBrains Mono',monospace" }} axisLine={false} tickLine={false} />
@@ -678,7 +679,7 @@ function ImpactDashboard() {
               <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "0.9rem", color: "#d8e4ff" }}>10-Year Growth Trajectory</div>
               <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.65rem", color: "#6b7fa8", marginTop: 3 }}>Organic traffic % growth curve</div>
             </div>
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={200} minWidth={0}>
               <AreaChart data={GROWTH_DATA} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
                 <defs>
                   <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
@@ -705,7 +706,7 @@ function ImpactDashboard() {
               <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "0.9rem", color: "#d8e4ff" }}>Competency Radar</div>
               <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.65rem", color: "#6b7fa8", marginTop: 3 }}>Proficiency across core domains</div>
             </div>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={220} minWidth={0}>
               <RadarChart data={SKILLS_RADAR} margin={{ top: 0, right: 20, bottom: 0, left: 20 }}>
                 <PolarGrid stroke="rgba(59,130,246,0.12)" />
                 <PolarAngleAxis dataKey="skill" tick={{ fill: "#8898b8", fontSize: 10, fontFamily: "'JetBrains Mono',monospace" }} />
@@ -1004,6 +1005,134 @@ function Footer() {
   );
 }
 
+// ─── Side Nav ────────────────────────────────────────────────────────────────
+
+const SECTIONS = [
+  { id: "hero",       label: "Home",       icon: Home },
+  { id: "about",      label: "About",      icon: UserCircle },
+  { id: "metrics",    label: "Metrics",    icon: BarChart3 },
+  { id: "experience", label: "Experience", icon: Briefcase },
+  { id: "projects",   label: "Projects",   icon: FolderOpen },
+  { id: "skills",     label: "Skills",     icon: Brain },
+  { id: "contact",    label: "Contact",    icon: Mail },
+];
+
+function SideNav() {
+  const [active, setActive] = useState("hero");
+  const [hovered, setHovered] = useState<string | null>(null);
+
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    SECTIONS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActive(id); },
+        { threshold: 0.35 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        right: 24,
+        top: "50%",
+        transform: "translateY(-50%)",
+        zIndex: 100,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+        gap: 14,
+      }}
+    >
+      {SECTIONS.map(({ id, label, icon: Icon }) => {
+        const isActive = active === id;
+        const isHov = hovered === id;
+        return (
+          <button
+            key={id}
+            onClick={() => scrollTo(id)}
+            onMouseEnter={() => setHovered(id)}
+            onMouseLeave={() => setHovered(null)}
+            title={label}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "none",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              outline: "none",
+            }}
+          >
+            {/* Label */}
+            <span style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: "0.65rem",
+              letterSpacing: "0.12em",
+              color: isActive ? "#f0f4ff" : "#6b7fa8",
+              opacity: isHov || isActive ? 1 : 0,
+              transform: isHov || isActive ? "translateX(0)" : "translateX(8px)",
+              transition: "all 0.25s ease",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
+            }}>
+              {label}
+            </span>
+
+            {/* Icon button */}
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: isActive
+                ? `rgba(59,130,246,0.18)`
+                : isHov
+                ? "rgba(255,255,255,0.07)"
+                : "rgba(255,255,255,0.03)",
+              border: isActive
+                ? `1px solid rgba(59,130,246,0.5)`
+                : `1px solid rgba(255,255,255,0.08)`,
+              boxShadow: isActive ? `0 0 12px rgba(59,130,246,0.35), 0 0 24px rgba(59,130,246,0.15)` : "none",
+              transition: "all 0.25s ease",
+              flexShrink: 0,
+              color: isActive ? P.blue : isHov ? "#a8b8d8" : "#4a5a78",
+            }}>
+              <Icon size={14} strokeWidth={isActive ? 2.5 : 1.8} />
+            </span>
+          </button>
+        );
+      })}
+
+      {/* Vertical line connector */}
+      <div style={{
+        position: "absolute",
+        right: 4,
+        top: 8,
+        bottom: 8,
+        width: 1,
+        background: "linear-gradient(to bottom, transparent, rgba(59,130,246,0.2), transparent)",
+        zIndex: -1,
+        pointerEvents: "none",
+      }} />
+    </div>
+  );
+}
+
 // ─── Cursor ───────────────────────────────────────────────────────────────────
 
 function Cursor() {
@@ -1038,6 +1167,7 @@ export default function App() {
   return (
     <div style={{ background: "var(--background)", minHeight: "100vh", overflowX: "hidden" }}>
       <Cursor />
+      <SideNav />
       <Nav />
       <Hero />
       <CrawlStrip />
