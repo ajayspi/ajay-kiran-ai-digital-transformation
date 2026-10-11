@@ -69,17 +69,12 @@ h1, h2, h3, h4 {
 ::-webkit-scrollbar-track { background: var(--background); }
 ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 2px; }
 
-/* Marquee */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
+/* Marquee (layout only — motion driven by framer-motion, auto-disabled under reduced motion) */
 .marquee-track {
-  animation: marquee 28s linear infinite;
   display: flex;
   white-space: nowrap;
+  will-change: transform;
 }
-.marquee-track:hover { animation-play-state: paused; }
 
 /* Particle canvas */
 #neural-canvas {
@@ -250,4 +245,11 @@ h1, h2, h3, h4 {
   border-radius: 50%;
   border: 1px solid;
   animation: spin-slow linear infinite;
+}
+
+/* Reduced-motion backstop: static, fully readable site */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal, .reveal-left, .reveal-right { opacity: 1 !important; transform: none !important; }
+  html { scroll-behavior: auto; }
 }
