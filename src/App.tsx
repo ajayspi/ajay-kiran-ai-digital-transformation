@@ -150,7 +150,7 @@ function Nav() {
       style={{ background: scrolled ? "rgba(5,8,16,0.92)" : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? "1px solid rgba(59,130,246,0.1)" : "none", padding: scrolled ? "12px 0" : "20px 0" }}>
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
         <a href="https://designjoom.com" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <img src={djLogo} alt="DesignJoom" width={120} height={28} style={{ height: 28, filter: "invert(1) sepia(1) saturate(6) hue-rotate(195deg) brightness(1.4)", opacity: 1, transition: "opacity 0.2s" }}
+          <img src={djLogo} alt="DesignJoom" width={171} height={28} style={{ height: 28, width: "auto", filter: "invert(1) sepia(1) saturate(6) hue-rotate(195deg) brightness(1.4)", opacity: 1, transition: "opacity 0.2s" }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "1"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.9"; }} />
         </a>
@@ -194,7 +194,7 @@ function Hero() {
           </div>
 
           <h1 style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: "clamp(2.8rem,6vw,5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
-            <span style={{ color: "#f0f4ff" }}>Av. Ajay</span><br />
+            <span style={{ color: "#f0f4ff" }}>A V Ajay</span><br />
             <span className="text-shimmer">Kiran</span>
           </h1>
 
@@ -239,10 +239,10 @@ function Hero() {
           <div style={{ animation: "float 6s ease-in-out infinite", position: "relative" }}>
             <div style={{ position: "absolute", inset: -30, background: "radial-gradient(circle,rgba(59,130,246,0.18) 0%,rgba(124,58,237,0.1) 50%,transparent 70%)", filter: "blur(36px)" }} />
             <div style={{ position: "relative", width: 260, height: 320, borderRadius: 24, overflow: "hidden", border: "1.5px solid rgba(59,130,246,0.35)", boxShadow: "0 0 48px rgba(59,130,246,0.22),0 0 100px rgba(124,58,237,0.12)" }}>
-              <img src={ajayPhoto} alt="Av. Ajay Kiran" width={260} height={320} fetchPriority="high"
+              <img src={ajayPhoto} alt="A V Ajay Kiran" width={260} height={320} fetchPriority="high"
                 style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: "auto", height: "110%", maxWidth: "none" }} />
               <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "28px 16px 14px", background: "linear-gradient(to top,rgba(5,8,16,0.88) 60%,transparent)" }}>
-                <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "0.95rem", color: "#f0f4ff" }}>Av. Ajay Kiran</div>
+                <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "0.95rem", color: "#f0f4ff" }}>A V Ajay Kiran</div>
                 <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.62rem", color: "#6b9fef", letterSpacing: "0.1em", marginTop: 2 }}>AI GROWTH LEADER</div>
               </div>
             </div>
@@ -536,7 +536,7 @@ function Contact() {
             style={{ border: "1px solid rgba(59,130,246,0.15)" }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.4)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.15)"; (e.currentTarget as HTMLElement).style.transform = ""; }}>
-            <img src={djLogo} alt="DesignJoom" width={120} height={30} loading="lazy" style={{ height: 30, filter: "invert(1) sepia(1) saturate(6) hue-rotate(195deg) brightness(1.4)", opacity: 1 }} />
+            <img src={djLogo} alt="DesignJoom" width={366} height={60} loading="lazy" style={{ width: "100%", height: "auto", maxWidth: 220, filter: "invert(1) sepia(1) saturate(6) hue-rotate(195deg) brightness(1.4)", opacity: 1 }} />
             <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.65rem", color: "#6b7fa8", letterSpacing: "0.1em" }}>designjoom.com</span>
           </a>
         </div>
@@ -568,10 +568,10 @@ function Footer() {
     <footer style={{ borderTop: "1px solid rgba(59,130,246,0.1)", padding: "24px 0" }}>
       <div className="max-w-6xl mx-auto px-6 flex flex-wrap justify-between items-center gap-4">
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <span style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: "1.1rem" }}><span className="text-shimmer">Av. Ajay Kiran</span></span>
+          <span style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: "1.1rem" }}><span className="text-shimmer">A V Ajay Kiran</span></span>
           <span style={{ color: "#2a3450", fontSize: "0.8rem" }}>·</span>
           <a href="https://designjoom.com" target="_blank" rel="noopener noreferrer">
-            <img src={djLogo} alt="DesignJoom" width={120} height={22} loading="lazy" style={{ height: 22, filter: "invert(1) sepia(1) saturate(5) hue-rotate(195deg) brightness(1.3)", opacity: 0.8, transition: "opacity 0.2s" }}
+            <img src={djLogo} alt="DesignJoom" width={134} height={22} loading="lazy" style={{ height: 22, width: "auto", filter: "invert(1) sepia(1) saturate(5) hue-rotate(195deg) brightness(1.3)", opacity: 0.8, transition: "opacity 0.2s" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.9"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.55"; }} />
           </a>
