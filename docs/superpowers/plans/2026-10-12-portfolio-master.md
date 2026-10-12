@@ -26,6 +26,35 @@ pnpm, deployed to Vercel from `main`, live at `https://www.designjoom.com`).
 recharts (lazy chunk). Vercel: framework preset `vite`, Node 24 — files in `/api/*`
 deploy as serverless functions with zero config.
 
+**Status (2026-10-12):** SP1 **DONE and verified in production.** `main` = `a23fea1`
+(Astro 7). Previous React SPA preserved on branch `v2` (`e8b1912`) and tag
+`pre-astro-vite`. Live measurement, production, GPTBot user agent:
+
+| Check | Before | After |
+|---|---|---|
+| Raw HTML to a non-JS crawler | 1,740 B, `<div id="root"></div>`, 0 h1, 0 text | 109,225 B, 1 h1, 9 h2, all 9 projects + 8 FAQs as text |
+| JSON-LD blocks | 0 | 4 (Person / WebSite / ProfilePage / FAQPage) |
+| `<title>` | no name | `A V Ajay Kiran — AI Growth & Digital Transformation Leader` |
+| robots / sitemap / llms.txt / og-image / favicon | all 404 | all 200 |
+| Shipped JS | 380,875 B + 436,951 B chart chunk | **4,795 B (2,026 B gzip)** |
+| CSS | 17,642 B | 40,963 B (8,329 B gzip) |
+| Frameworks | React, framer-motion, recharts, lucide-react, lenis | none |
+
+Two real bugs were caught by verification rather than by reading the code — the
+blank-page reveal failure and the radar `<path d>` / `<polygon points>` mistake. Both are
+guarded by `scripts/verify.mjs` + `scripts/parity.mjs`, now the project's test suite.
+
+**Still open:** SP2 (contact form — needs Supabase project URL + `service_role` key and a
+Resend API key), SP3 (project screenshots — empty `.shot` slots are already reserved in
+`Projects.astro`), SP4 (case studies, testimonials, CV download — testimonials need real
+quotes), SP5 (GSC/Bing verification meta needs Ajay's tokens; the 12-prompt GEO panel is
+written at `docs/geo-prompt-panel.md`).
+
+**Off-site, still Ajay's to do:** LinkedIn title/employer alignment (the site says "Growth
+Leader / AI Growth & Digital Strategy Lead" at "DIGIT AI"; LinkedIn says "Head of Digital"
+at "DigitAI" — sources that disagree produce low confidence and therefore no citation),
+footer credits on any client site he controls, and Bing Webmaster verification.
+
 ---
 
 ## Measured baseline (2026-10-12, verified against production)
