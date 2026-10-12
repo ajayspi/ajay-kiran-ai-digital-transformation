@@ -1,41 +1,79 @@
-# figma-make-app
+# designjoom.com — A V Ajay Kiran
 
-React + Vite + Tailwind CSS project running inside Figma Make.
+Astro 7 + Tailwind CSS v4. Static site, no UI framework. Deployed to Vercel from `main`.
 
-## Development Server
+## Commands
 
-A Vite development server is **already running** on `$PORT` (default 8443). You don't need to start it manually.
+```bash
+pnpm install
+pnpm dev            # astro dev on :4321
+pnpm build          # astro build -> dist/
+pnpm preview        # serve dist/ on :4321
 
-- Preview URL: The user can access the running app through the preview panel
-- Hot reload: Changes to source files are reflected immediately
+pnpm verify         # SEO/AEO assertions against dist/  — the test suite
+pnpm parity <url>   # behavioural assertions against a running site
+```
 
-## Project Structure
+**`pnpm verify` and `pnpm parity` are the tests.** There is no test framework in this
+repo and there should not be — a static site does not need Vitest. Both scripts assert
+against real output (`dist/` or a served URL) and exit non-zero on failure. Run both
+after any change; a change that ships with either red is not done.
 
-This is the canonical project structure. Start with task-relevant files below. Only follow imports or inspect other files when required, when a documented path is missing, or when the repository contradicts this guide.
+First `astro build` after a dependency change takes ~70s (dep optimisation + type
+generation). Steady state is ~3-7s. That is normal, not a hang.
 
-- `src/main.tsx` - React entrypoint; imports `src/index.css` and mounts `src/App.tsx` into the `#root` element
-- `src/App.tsx` - Primary application component and the usual starting point for UI work
-- `src/index.css` - Global CSS entrypoint and Tailwind CSS v4 import
-- `index.html` - Vite HTML shell containing the `#root` element and loading `src/main.tsx`
-- `package.json` - Project dependencies and the Vite build, development, preview, and formatting scripts
-- `vite.config.ts` - Vite configuration with React, Tailwind CSS v4, and Figma Make plugins plus the `@` alias for `src`
-- `.mise.toml` - Toolchain versions for Node.js and pnpm
+## Project structure
 
-## Dependencies
+```
+astro.config.mjs        site URL, sitemap integration, Tailwind via @tailwindcss/vite
+public/                 copied verbatim to dist/ — robots.txt, llms.txt, favicon,
+                        ajay-kiran.png (stable schema: URL), og-image.jpg
+src/
+  seo.ts                identity, metadata, quick facts, results ledger, FAQ
+  data.ts               projects, experience, skills (unchanged since the React era)
+  index.css             Tailwind import, design tokens, global CSS, reduced-motion
+  layouts/Base.astro    <head> (all metadata + JSON-LD), skip link, cursor markup
+  components/*.astro    one file per section; markup is static HTML, no hydration
+  lib/chart.ts          build-time SVG geometry (sparkline, area, radar, bars)
+  scripts/*.ts          the only client JS: reveal, counters, nav, cursor,
+                        canvas, typewriter, dom (shared readiness guard)
+  pages/index.astro     composes the sections in order
+scripts/verify.mjs      dist/ assertions: head, social, schema, content, assets
+scripts/parity.mjs      behavioural assertions against a served URL
+docs/geo-prompt-panel.md  the 12 fixed prompts + monthly citation log
+```
 
-- Runtime: React 19 and React DOM 19
-- Styling: Tailwind CSS v4 with the `@tailwindcss/vite` plugin
-- Build tooling: Vite 8, TypeScript 5.7, and `@vitejs/plugin-react`
-- Formatting: oxfmt
+## Rules that are not obvious
 
-## Styling
+- **`src/seo.ts` is the single source of identity.** `IDENTITY.name` and
+  `IDENTITY.descriptor` are the canonical strings used verbatim in the `<title>`, the
+  `<h1>` and the JSON-LD `Person` node. Change them there, nowhere else, or the
+  declared entity drifts.
+- **Answer content must be visible to users, not just to crawlers.** The FAQ, quick
+  facts and results table exist in the rendered page *and* in the schema. Content served
+  only to crawlers is cloaking — a ranking penalty and a lie.
+- **Never let a script own visibility.** Reveal-on-scroll hides content behind
+  `[data-reveal-ready]`, which `reveal.ts` sets only after attaching an observer, plus a
+  3s fallback. If you touch that logic, keep the invariant: no JS, an early-running
+  script, or a dead observer must all leave the page readable.
+- **Git LFS will silently break site images.** `*.png`, `*.jpg` and `*.webp` are
+  LFS-tracked by `.gitattributes`. Every image the site actually serves needs a raw
+  exception appended at the **END** of that file — later rules override earlier ones.
+  An LFS pointer shipped as content is exactly how the hero photo broke once before;
+  `verify.mjs` and `parity.mjs` both grep `dist/` for `git-lfs` to stop it recurring.
+- **`astro.config.mjs` sets `vite.configFile: false` on purpose.** The old Figma Make
+  `vite.config.ts` must never leak into Astro's Vite instance.
+- **Tailwind only.** No CSS frameworks, no component libraries. Icons live in
+  `Icon.astro` as inlined lucide geometry rather than a runtime icon package.
+- **prefers-reduced-motion is honoured** site-wide: framer is gone, so animations are
+  CSS keyframes killed by the backstop in `index.css`, and the JS scripts check
+  `matchMedia` before animating.
+- **Content honesty is non-negotiable.** Every metric traces to a verified source in
+  `src/data.ts`. No invented numbers, testimonials, clients or credentials. If a fact is
+  unavailable, omit the element — do not approximate it.
 
-This project uses **Tailwind CSS v4** through the `@tailwindcss/vite` plugin configured in `vite.config.ts`. `src/index.css` imports Tailwind with `@import 'tailwindcss';`. Use Tailwind utility classes directly in JSX and put global CSS or Tailwind v4 theme customization in `src/index.css`. This scaffold does not need a Tailwind config file or PostCSS config.
+## History
 
-`src/main.tsx` imports `src/index.css`, so global font wiring belongs in `src/index.css`. Keep CSS `@import` statements first, then add any `@font-face` rules and font-family defaults there.
-
-## Code quality
-
-- Use double quotes for strings containing apostrophes (`"We're here to help"`), or escape them in single-quoted strings. An unescaped apostrophe in a single-quoted string breaks the build.
-- Ensure JSX tags are closed and braces are balanced.
-- Export components as default exports.
+`v1` is the original Figma Make site. `v2` is the React/Vite SPA (e8b1912), preserved
+because it was live until this migration; tag `pre-astro-vite` points at the same commit.
+`main` is the Astro site. Do not force-push `main`.
