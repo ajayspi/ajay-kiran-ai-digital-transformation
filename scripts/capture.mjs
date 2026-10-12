@@ -143,11 +143,21 @@ try {
 
   const { result: diag } = await send("Runtime.evaluate", {
     expression: `JSON.stringify({ title: document.title, h: document.body.scrollHeight,
-      imgs: [...document.images].filter(i => i.naturalWidth > 0).length + "/" + document.images.length })`,
+      imgs: [...document.images].filter(i => i.naturalWidth > 0).length + "/" + document.images.length,
+      // complete && naturalWidth 0 == the browser failed to DECODE it. That is how a
+      // git-CRLF-corrupted PNG presents, and it is invisible to an HTTP check that only
+      // sees a 200 with image/png.
+      broken: [...document.images].filter(i => i.complete && i.naturalWidth === 0)
+                 .map(i => (i.currentSrc || i.src || "?").split("/").pop()) })`,
     returnByValue: true,
   }, sessionId);
+  const d = JSON.parse(diag.value);
   console.log(`${outPath}  ${report.length ? report.join(" | ") : ""}`);
-  console.log(`  ${diag.value}`);
+  console.log(`  title="${d.title}" height=${d.h} images=${d.imgs} loaded`);
+  if (d.broken.length) {
+    console.error(`  BROKEN IMAGES (${d.broken.length}): ${d.broken.join(", ")}`);
+    process.exitCode = 1;
+  }
 } catch (err) {
   console.error("capture failed:", err.message);
   process.exitCode = 1;

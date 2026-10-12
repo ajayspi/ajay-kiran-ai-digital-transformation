@@ -145,12 +145,15 @@
 *.nc                 filter=lfs diff=lfs merge=lfs -text
 *.mat                filter=lfs diff=lfs merge=lfs -text
 
-# Site-critical images stay raw so Vercel builds never depend on LFS fetch
-src/imports/Screenshot_2026-08-26_034116-2.png filter= diff= merge= text
-src/imports/Screenshot_2026-08-26_034116.png filter= diff= merge= text
+# Site-critical images stay raw so Vercel builds never depend on LFS fetch.
+# -text is REQUIRED, not cosmetic: plain `text` tells git to normalise CRLF<->LF on
+# checkout, which rewrites bytes inside a PNG/JPEG and leaves the browser unable to
+# decode it (complete=true, naturalWidth=0). That silently broke the hero photo once.
+src/imports/Screenshot_2026-08-26_034116-2.png filter= diff= merge= -text
+src/imports/Screenshot_2026-08-26_034116.png filter= diff= merge= -text
 
 # Public-path images must stay raw too — a stable schema: URL (IDENTITY.image in src/seo.ts)
 # depends on /ajay-kiran.png existing as real bytes, not an LFS pointer.
-public/ajay-kiran.png filter= diff= merge= text
-public/og-image.jpg filter= diff= merge= text
-src/imports/projects/*.webp filter= diff= merge= text
+public/ajay-kiran.png filter= diff= merge= -text
+public/og-image.jpg filter= diff= merge= -text
+src/imports/projects/*.webp filter= diff= merge= -text

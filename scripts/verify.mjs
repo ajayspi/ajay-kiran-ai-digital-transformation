@@ -2,8 +2,9 @@
 // Run: pnpm build && node scripts/verify.mjs      (or: node scripts/verify.mjs <url>)
 // Exits non-zero on failure. Hardcoded expectations — an independent check, not a
 // tautology against the same data the build read.
-import { readFileSync, existsSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
+import { join, relative } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const arg = process.argv[2];
 let html, readAsset;
@@ -174,6 +175,78 @@ if (!arg) {
     // RIFF....WEBP magic — catches a renamed PNG and any LFS pointer.
     ok(buf.slice(0, 4).toString() === "RIFF" && buf.slice(8, 12).toString() === "WEBP",
       `thumbnail is real webp: ${slug}.webp`);
+  }
+}
+
+// ── source image integrity ────────────────────────────────────────────────────
+// A `text` attribute in .gitattributes makes git normalise CRLF<->LF, which rewrites
+// bytes inside a PNG/JPEG/WebP. The file still serves 200 with the right content-type,
+// so every HTTP-level check passes, and the browser just shows a broken image. This
+// compares each working-tree image against its committed blob, then structurally
+// validates it. It is the check that would have caught the hero photo and five project
+// thumbnails being silently corrupted on checkout.
+if (!arg) {
+  const imgs = [];
+  const collect = (dir) => {
+    if (!existsSync(dir)) return;
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, e.name);
+      if (e.isDirectory()) collect(p);
+      else if (/\.(png|jpe?g|webp)$/i.test(e.name)) imgs.push(p);
+    }
+  };
+  collect(join(process.cwd(), "public"));
+  collect(join(process.cwd(), "src", "imports"));
+
+  for (const p of imgs) {
+    const rel = relative(process.cwd(), p).replace(/\\/g, "/");
+    const disk = statSync(p);
+    const b = readFileSync(p);
+
+    // LFS-tracked files legitimately store a ~130-byte pointer in the index, so the
+    // disk-vs-index size comparison only applies to files git stores raw.
+    let filter = "";
+    try {
+      filter = execFileSync("git", ["check-attr", "filter", "--", rel],
+        { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim().split(/\s+/).pop();
+    } catch { /* not a git repo — structural checks below still run */ }
+
+    if (filter === "lfs") {
+      let idxBlob = "";
+      try {
+        idxBlob = execFileSync("git", ["cat-file", "blob", `:${rel}`],
+          { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+      } catch { /* ignore */ }
+      ok(idxBlob.startsWith("version https://git-lfs"),
+        `LFS pointer intact in the index: ${rel}`);
+      ok(!b.subarray(0, 60).toString().includes("git-lfs"),
+        `working copy is smudged real bytes, not a pointer: ${rel}`);
+    } else {
+      let blob = null;
+      try {
+        // compare against the INDEX (":path"), not HEAD: this validates "what git is about
+        // to store is byte-identical to the file on disk", which is the actual invariant.
+        blob = Number(execFileSync("git", ["cat-file", "-s", `:${rel}`],
+          { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim());
+      } catch { /* untracked (e.g. a capture not yet staged) — structural check still runs */ }
+      if (blob !== null) {
+        ok(disk.size === blob,
+          `image matches what git will store (no CRLF rewrite): ${rel} [disk ${disk.size} vs index ${blob}]`);
+      }
+    }
+
+    if (/\.png$/i.test(rel)) {
+      ok(b.slice(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
+        `PNG signature intact: ${rel}`);
+    } else if (/\.webp$/i.test(rel)) {
+      ok(b.slice(0, 4).toString() === "RIFF" && b.slice(8, 12).toString() === "WEBP",
+        `WebP RIFF/WEBP header intact: ${rel}`);
+      ok(b.length >= 8 && b.readUInt32LE(4) === b.length - 8,
+        `WebP RIFF length matches file size: ${rel}`);
+    } else {
+      ok(b[0] === 0xff && b[1] === 0xd8, `JPEG SOI marker intact: ${rel}`);
+      ok(b.length > 2 && b[b.length - 2] === 0xff && b[b.length - 1] === 0xd9, `JPEG EOI marker intact: ${rel}`);
+    }
   }
 }
 
