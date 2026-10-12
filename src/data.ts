@@ -221,13 +221,13 @@ export const PROJECTS: Project[] = [
   {
     name: "Talenttrek",
     subtitle: "Talent Platform — Website (Next.js)",
-    description: "Design and build of a talent-platform website on Next.js App Router with blog, industry pages and a contact API. (Public deploy currently offline — repo link until it is back.)",
+    description: "Design and build of a talent-platform website on Next.js App Router with blog, industry pages and a contact API.",
     metrics: ["Next.js App Router", "Blog + Industries", "Contact API", "TypeScript"],
     tags: ["Next.js", "TypeScript", "Web Development"],
     color: P.orange,
-    link: "https://github.com/ajayspi/Talenttrek",
+    link: "https://talenttrek-mocha.vercel.app",
     image: "talenttrek",
-    imageAlt: "Talenttrek GitHub repository card",
+    imageAlt: "Talent Trek — AI voice, chat and agent solutions homepage",
   },
   {
     name: "Clipped AI Studio",

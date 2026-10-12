@@ -59,13 +59,17 @@ if (!cssHref) {
 
 // ── images: real binaries, not LFS pointers ───────────────────────────────────
 const srcs = [...html.matchAll(/<img[^>]+src="([^"]+)"/g)].map((m) => m[1]);
-if (srcs.length < 3) fails.push(`expected >=3 images, found ${srcs.length}`);
+if (srcs.length < 12) fails.push(`expected >=12 images (photo, logos, 9 thumbnails), found ${srcs.length}`);
 for (const src of [...new Set(srcs)]) {
   const res = await fetch(new URL(src, BASE + "/"));
   const buf = Buffer.from(await res.arrayBuffer());
-  const isPng = buf.length > 8 && buf[0] === 0x89 && buf[1] === 0x50;
-  ok(isPng, `image is a real PNG: ${src}`);
-  ok(buf.length > 10_000, `image has real bytes (${buf.length}): ${src}`);
+  // Check magic bytes, not the extension: the invariant is "a real image", and the
+  // thumbnails are webp while the photo and logos are png.
+  const isPng = buf.length > 8 && buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e;
+  const isWebp = buf.slice(0, 4).toString() === "RIFF" && buf.slice(8, 12).toString() === "WEBP";
+  const isJpeg = buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff;
+  ok(isPng || isWebp || isJpeg, `image has real image bytes: ${src}`);
+  ok(buf.length > 3_000, `image has real bytes (${buf.length}): ${src}`);
 }
 
 // ── dist sweep: no LFS pointers anywhere ──────────────────────────────────────
