@@ -31,8 +31,20 @@ body {
   color: var(--foreground);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  cursor: none;
 }
+
+/* Custom cursor only where a fine pointer exists (see Cursor in App.tsx) */
+@media (pointer: fine) {
+  body { cursor: none; }
+  .sidenav-btn { cursor: pointer; }
+}
+
+/* Anchored sections clear the sticky nav */
+section[id] { scroll-margin-top: 72px; }
+
+/* Visible keyboard focus for the side nav */
+.sidenav-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+.sidenav-btn:focus:not(:focus-visible) { outline: none; }
 
 h1, h2, h3, h4 {
   font-family: 'Sora', sans-serif;
@@ -137,35 +149,7 @@ h1, h2, h3, h4 {
   border: 1px solid rgba(59, 130, 246, 0.25);
 }
 
-.reveal {
-  opacity: 0;
-  transform: translateY(48px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.reveal-left {
-  opacity: 0;
-  transform: translateX(-48px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-.reveal-left.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.reveal-right {
-  opacity: 0;
-  transform: translateX(48px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-.reveal-right.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
+/* Reveal handled by framer-motion (src/Reveal.tsx) — no CSS classes needed */
 
 .scan-effect::after {
   content: '';

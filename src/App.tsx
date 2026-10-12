@@ -8,6 +8,7 @@ import {
   Home, UserCircle, Briefcase, FolderOpen
 } from "lucide-react";
 import ajayPhoto from "@/imports/Screenshot_2026-08-26_034116-2.png";
+import { Reveal } from "./Reveal";
 const Metrics = lazy(() => import("./Charts").then((m) => ({ default: m.Metrics })));
 const ImpactDashboard = lazy(() => import("./Charts").then((m) => ({ default: m.ImpactDashboard })));
 import djLogo from "@/imports/Designjoom-logo-1.png";
@@ -139,24 +140,13 @@ function Typewriter({ words }: { words: string[] }) {
 
 // ─── Counter ──────────────────────────────────────────────────────────────────
 
-// ─── Reveal ───────────────────────────────────────────────────────────────────
-
-function useReveal() {
-  useEffect(() => {
-    const els = document.querySelectorAll<HTMLElement>(".reveal,.reveal-left,.reveal-right");
-    const obs = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) (e.target as HTMLElement).classList.add("visible"); }), { threshold: 0.08, rootMargin: "0px 0px -50px 0px" });
-    els.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
-  }, []);
-}
-
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => { const f = () => setScrolled(window.scrollY > 50); window.addEventListener("scroll", f); return () => window.removeEventListener("scroll", f); }, []);
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+    <nav className="fixed top-0 left-0 right-0 z-50 transition-[transform,box-shadow,background-color,border-color,padding] duration-500"
       style={{ background: scrolled ? "rgba(5,8,16,0.92)" : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? "1px solid rgba(59,130,246,0.1)" : "none", padding: scrolled ? "12px 0" : "20px 0" }}>
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
         <a href="https://designjoom.com" target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
@@ -170,7 +160,7 @@ function Nav() {
           ))}
         </div>
         <a href="mailto:ajayspi@gmail.com"
-          className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300"
+          className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full transition-[transform,box-shadow,background-color,border-color] duration-300"
           style={{ background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.3)", color: P.blue, fontFamily: "'JetBrains Mono',monospace", fontSize: "0.78rem" }}
           onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(59,130,246,0.2)"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(59,130,246,0.1)"; }}>
@@ -214,13 +204,13 @@ function Hero() {
 
 
           <div className="flex flex-wrap gap-3 mt-8">
-            <a href="#contact" className="flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300"
+            <a href="#contact" className="flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-[transform,box-shadow,background-color,border-color] duration-300"
               style={{ background: "linear-gradient(135deg,#3b82f6,#7c3aed)", color: "#fff", fontFamily: "'Sora',sans-serif" }}
               onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 16px 40px rgba(59,130,246,0.4)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}>
               <Mail size={14} /> Get in Touch
             </a>
-            <a href="#projects" className="flex items-center gap-2 px-6 py-3 rounded-full text-sm transition-all duration-300"
+            <a href="#projects" className="flex items-center gap-2 px-6 py-3 rounded-full text-sm transition-[transform,box-shadow,background-color,border-color] duration-300"
               style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#a8b8d8", fontFamily: "'Sora',sans-serif", fontWeight: 600 }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(59,130,246,0.4)"; e.currentTarget.style.color = "#f0f4ff"; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "#a8b8d8"; }}>
@@ -235,7 +225,7 @@ function Hero() {
               { icon: Globe, href: "https://designjoom.com", label: "Website" },
             ].map(({ icon: Icon, href, label }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer" title={label}
-                className="transition-all duration-200" style={{ color: "#6b7fa8" }}
+                className="transition-[transform,box-shadow,background-color,border-color,color] duration-200" style={{ color: "#6b7fa8" }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = P.blue; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#6b7fa8"; (e.currentTarget as HTMLElement).style.transform = ""; }}>
                 <Icon size={18} />
@@ -321,7 +311,7 @@ function About() {
   return (
     <section id="about" style={{ padding: "100px 0" }}>
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
-        <div className="reveal-left">
+        <Reveal x={-48}>
           <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.72rem", color: P.blue, letterSpacing: "0.2em", marginBottom: 12 }}>ABOUT</div>
           <h2 style={{ fontFamily: "'Sora',sans-serif", fontSize: "clamp(1.8rem,4vw,2.6rem)", fontWeight: 800, color: "#f0f4ff", lineHeight: 1.1 }}>
             AI + Growth + UX<br /><span className="text-shimmer">+ Digital Transformation</span>
@@ -340,8 +330,8 @@ function About() {
               AI + Growth + UX + Digital Transformation — building digital experiences, growth systems and AI-powered workflows that connect business strategy with measurable customer outcomes.
             </p>
           </div>
-        </div>
-        <div className="reveal-right">
+        </Reveal>
+        <Reveal x={48}>
           <div className="grid grid-cols-2 gap-3">
             {framework.map(({ step, color, icon: Icon, desc }) => (
               <div key={step} className="glass-bright card-hover rounded-2xl p-5" style={{ border: `1px solid ${color}22` }}>
@@ -360,7 +350,7 @@ function About() {
               <div style={{ fontSize: "0.78rem", color: "#6b7fa8" }}>Human Factors International · Jan 2026</div>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -372,15 +362,15 @@ function Experience() {
   return (
     <section id="experience" style={{ padding: "100px 0", background: "rgba(5,8,20,0.5)" }}>
       <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-16 reveal">
+        <Reveal className="text-center mb-16">
           <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.72rem", color: P.blue, letterSpacing: "0.2em", marginBottom: 12 }}>EXPERIENCE</div>
           <h2 style={{ fontFamily: "'Sora',sans-serif", fontSize: "clamp(1.8rem,4vw,2.8rem)", fontWeight: 800, color: "#f0f4ff" }}>Career <span className="text-shimmer">Timeline</span></h2>
-        </div>
+        </Reveal>
         <div style={{ position: "relative" }}>
           <div style={{ position: "absolute", left: 5, top: 0, bottom: 0, width: 1, background: `linear-gradient(to bottom,${P.blue},${P.violet},${P.cyan},${P.green})` }} />
           <div className="flex flex-col gap-10">
             {EXPERIENCE.map((exp, i) => (
-              <div key={i} className="reveal flex gap-8" style={{ transitionDelay: `${i * 100}ms` }}>
+              <Reveal key={i} className="flex gap-8" delay={i * 0.1}>
                 <div style={{ paddingTop: 6, flexShrink: 0 }}>
                   <div className="timeline-dot" style={{ background: exp.color, boxShadow: `0 0 12px ${exp.color}` }} />
                 </div>
@@ -403,7 +393,7 @@ function Experience() {
                     ))}
                   </ul>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -419,14 +409,14 @@ function Projects() {
   return (
     <section id="projects" style={{ padding: "100px 0" }}>
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16 reveal">
+        <Reveal className="text-center mb-16">
           <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.72rem", color: P.blue, letterSpacing: "0.2em", marginBottom: 12 }}>PROJECTS</div>
           <h2 style={{ fontFamily: "'Sora',sans-serif", fontSize: "clamp(1.8rem,4vw,2.8rem)", fontWeight: 800, color: "#f0f4ff" }}>Work That<br /><span className="text-shimmer">Delivers Results</span></h2>
-        </div>
+        </Reveal>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {PROJECTS.map((p, i) => (
-            <div key={i} className="glass card-hover rounded-2xl p-6 reveal cursor-pointer"
-              style={{ transitionDelay: `${i * 70}ms`, border: active === i ? `1px solid ${p.color}55` : "1px solid rgba(59,130,246,0.1)", position: "relative", overflow: "hidden" }}
+            <Reveal key={i} className="glass rounded-2xl p-6" delay={i * 0.07} hoverLift={6} hoverShadow={`0 24px 64px ${p.color}33`}
+              style={{ border: active === i ? `1px solid ${p.color}55` : "1px solid rgba(59,130,246,0.1)", position: "relative", overflow: "hidden" }}
               onMouseEnter={() => setActive(i)} onMouseLeave={() => setActive(null)}>
               <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,transparent,${p.color},transparent)`, opacity: active === i ? 1 : 0, transition: "opacity 0.3s" }} />
               <div style={{ position: "absolute", top: -60, right: -60, width: 160, height: 160, borderRadius: "50%", background: p.color, opacity: active === i ? 0.07 : 0.02, filter: "blur(40px)", transition: "opacity 0.4s" }} />
@@ -435,7 +425,7 @@ function Projects() {
                   <h3 style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: "1.25rem", color: p.color }}>{p.name}</h3>
                   <div style={{ fontSize: "0.73rem", color: "#6b7fa8", marginTop: 2 }}>{p.subtitle}</div>
                 </div>
-                <a href={p.link} target="_blank" rel="noopener noreferrer" style={{ color: "#6b7fa8", transition: "color 0.2s" }}
+                <a href={p.link} target="_blank" rel="noopener noreferrer" aria-label={`Open ${p.name} in a new tab`} style={{ color: "#6b7fa8", transition: "color 0.2s" }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = p.color; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#6b7fa8"; }}>
                   <ExternalLink size={15} />
@@ -450,7 +440,7 @@ function Projects() {
               <div className="flex flex-wrap gap-1.5">
                 {p.tags.map((t) => (<span key={t} className="tag" style={{ fontSize: "0.67rem" }}>{t}</span>))}
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -475,13 +465,13 @@ function Skills() {
   return (
     <section id="skills" style={{ padding: "100px 0", background: "rgba(5,8,20,0.4)" }}>
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16 reveal">
+        <Reveal className="text-center mb-16">
           <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.72rem", color: P.blue, letterSpacing: "0.2em", marginBottom: 12 }}>SKILLS</div>
           <h2 style={{ fontFamily: "'Sora',sans-serif", fontSize: "clamp(1.8rem,4vw,2.8rem)", fontWeight: 800, color: "#f0f4ff" }}>The Full <span className="text-shimmer">Stack</span></h2>
-        </div>
+        </Reveal>
         <div className="grid md:grid-cols-2 gap-6">
           {groups.map((g, i) => (
-            <div key={i} className="glass-bright rounded-2xl p-6 reveal" style={{ transitionDelay: `${i * 80}ms`, border: `1px solid ${g.color}18` }}>
+            <Reveal key={i} className="glass-bright rounded-2xl p-6" delay={i * 0.08} style={{ border: `1px solid ${g.color}18` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
                 <div style={{ width: 8, height: 8, borderRadius: "50%", background: g.color, boxShadow: `0 0 8px ${g.color}` }} />
                 <h3 style={{ fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: "0.95rem", color: g.color }}>{g.title}</h3>
@@ -489,10 +479,10 @@ function Skills() {
               <div className="flex flex-wrap gap-2">
                 {g.items.map((s) => (<span key={s} className="tag">{s}</span>))}
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
-        <div className="mt-10 reveal">
+        <Reveal className="mt-10">
           <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.68rem", color: P.blue, letterSpacing: "0.2em", marginBottom: 12 }}>CERTIFICATIONS</div>
           <div className="flex flex-wrap gap-4">
             {CERTS.map((c) => (
@@ -505,7 +495,7 @@ function Skills() {
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -516,7 +506,7 @@ function Skills() {
 function Contact() {
   return (
     <section id="contact" style={{ padding: "120px 0", background: "radial-gradient(ellipse 80% 60% at 50% 100%,rgba(59,130,246,0.08) 0%,transparent 70%)" }}>
-      <div className="max-w-3xl mx-auto px-6 text-center reveal">
+      <Reveal className="max-w-3xl mx-auto px-6 text-center">
         <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: "0.72rem", color: P.blue, letterSpacing: "0.2em", marginBottom: 12 }}>CONTACT</div>
         <h2 style={{ fontFamily: "'Sora',sans-serif", fontSize: "clamp(2rem,5vw,3.5rem)", fontWeight: 800, color: "#f0f4ff", lineHeight: 1.1 }}>
           Let's Build Something<br /><span className="text-shimmer">Extraordinary</span>
@@ -528,9 +518,9 @@ function Contact() {
           {[
             { icon: Mail, label: "ajayspi@gmail.com", href: "mailto:ajayspi@gmail.com", color: P.blue },
             { icon: Phone, label: "+91 98853 69345", href: "tel:+919885369345", color: P.violet },
-            { icon: Target, label: "Hyderabad · UAE", href: "#", color: P.cyan },
+            { icon: Target, label: "Hyderabad · UAE", href: "https://maps.google.com/?q=Hyderabad,India", color: P.cyan },
           ].map(({ icon: Icon, label, href, color }) => (
-            <a key={label} href={href} className="glass-bright flex items-center gap-3 px-6 py-4 rounded-2xl transition-all duration-300"
+            <a key={label} href={href} className="glass-bright flex items-center gap-3 px-6 py-4 rounded-2xl transition-[transform,box-shadow,background-color,border-color] duration-300"
               style={{ border: `1px solid ${color}22`, textDecoration: "none" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = `${color}55`; (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = `${color}22`; (e.currentTarget as HTMLElement).style.transform = ""; }}>
@@ -542,7 +532,7 @@ function Contact() {
         {/* DesignJoom brand logo */}
         <div className="flex justify-center mt-8">
           <a href="https://designjoom.com" target="_blank" rel="noopener noreferrer"
-            className="glass flex items-center gap-3 px-5 py-3 rounded-2xl transition-all duration-300"
+            className="glass flex items-center gap-3 px-5 py-3 rounded-2xl transition-[transform,box-shadow,background-color,border-color] duration-300"
             style={{ border: "1px solid rgba(59,130,246,0.15)" }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.4)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.15)"; (e.currentTarget as HTMLElement).style.transform = ""; }}>
@@ -558,7 +548,7 @@ function Contact() {
             { label: "Behance",  href: "https://www.behance.net/Designjoom", icon: Globe },
           ].map(({ label, href, icon: Icon }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200"
+              className="flex items-center gap-2 px-4 py-2 rounded-full transition-[transform,box-shadow,background-color,border-color,color] duration-200"
               style={{ fontSize: "0.8rem", color: "#6b7fa8", fontFamily: "'JetBrains Mono',monospace", border: "1px solid rgba(255,255,255,0.06)" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = P.blue; (e.currentTarget as HTMLElement).style.borderColor = "rgba(59,130,246,0.3)"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#6b7fa8"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.06)"; }}>
@@ -566,7 +556,7 @@ function Contact() {
             </a>
           ))}
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }
@@ -655,15 +645,15 @@ function SideNav() {
             onMouseEnter={() => setHovered(id)}
             onMouseLeave={() => setHovered(null)}
             title={label}
+            aria-label={`Go to ${label} section`}
+            className="sidenav-btn"
             style={{
               background: "none",
               border: "none",
               padding: 0,
-              cursor: "none",
               display: "flex",
               alignItems: "center",
               gap: 10,
-              outline: "none",
             }}
           >
             {/* Label */}
@@ -674,7 +664,7 @@ function SideNav() {
               color: isActive ? "#f0f4ff" : "#6b7fa8",
               opacity: isHov || isActive ? 1 : 0,
               transform: isHov || isActive ? "translateX(0)" : "translateX(8px)",
-              transition: "all 0.25s ease",
+              transition: "opacity 0.25s ease, transform 0.25s ease",
               textTransform: "uppercase",
               whiteSpace: "nowrap",
             }}>
@@ -698,7 +688,7 @@ function SideNav() {
                 ? `1px solid rgba(59,130,246,0.5)`
                 : `1px solid rgba(255,255,255,0.08)`,
               boxShadow: isActive ? `0 0 12px rgba(59,130,246,0.35), 0 0 24px rgba(59,130,246,0.15)` : "none",
-              transition: "all 0.25s ease",
+              transition: "background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease",
               flexShrink: 0,
               color: isActive ? P.blue : isHov ? "#a8b8d8" : "#4a5a78",
             }}>
@@ -728,25 +718,29 @@ function SideNav() {
 function Cursor() {
   const dot = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLDivElement>(null);
+  // ponytail: custom cursor is a fine-pointer enhancement only; touch/keyboard/reduced-motion users get the native cursor
+  const [enabled, setEnabled] = useState(false);
   useEffect(() => {
-    let rx = 0, ry = 0, ax = 0, ay = 0;
+    if (!window.matchMedia("(pointer: fine)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setEnabled(true);
+    let rx = 0, ry = 0, ax = 0, ay = 0, raf = 0;
     const onMove = (e: MouseEvent) => { ax = e.clientX; ay = e.clientY; if (dot.current) { dot.current.style.left = ax + "px"; dot.current.style.top = ay + "px"; } };
-    const raf = () => {
+    const tick = () => {
       rx += (ax - rx) * 0.13; ry += (ay - ry) * 0.13;
       if (ring.current) { ring.current.style.left = rx + "px"; ring.current.style.top = ry + "px"; }
-      requestAnimationFrame(raf);
+      raf = requestAnimationFrame(tick);
     };
     window.addEventListener("mousemove", onMove);
-    requestAnimationFrame(raf);
-    return () => window.removeEventListener("mousemove", onMove);
+    raf = requestAnimationFrame(tick);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("mousemove", onMove); };
   }, []);
-  return (<><div ref={dot} className="cursor" /><div ref={ring} className="cursor-follower" /></>);
+  if (!enabled) return null;
+  return (<><div ref={dot} className="cursor" aria-hidden="true" /><div ref={ring} className="cursor-follower" aria-hidden="true" /></>);
 }
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
-  useReveal();
   useEffect(() => {
     // ponytail: smooth-scroll hijack only for users without a reduced-motion preference
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
