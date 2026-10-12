@@ -1,0 +1,154 @@
+// AEO/SEO/GEO assertions against the built output.
+// Run: pnpm build && node scripts/verify.mjs      (or: node scripts/verify.mjs <url>)
+// Exits non-zero on failure. Hardcoded expectations — an independent check, not a
+// tautology against the same data the build read.
+import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+
+const arg = process.argv[2];
+let html, readAsset;
+
+if (arg && /^https?:\/\//.test(arg)) {
+  const base = arg.replace(/\/$/, "");
+  html = await (await fetch(base + "/")).text();
+  readAsset = async (rel) => {
+    const res = await fetch(new URL(rel, base + "/"));
+    return Buffer.from(await res.arrayBuffer());
+  };
+} else {
+  const DIST = join(process.cwd(), "dist");
+  html = readFileSync(join(DIST, "index.html"), "utf8");
+  readAsset = (rel) => readFileSync(join(DIST, rel.replace(/^\//, "")));
+}
+
+const fails = [];
+const ok = (cond, label) => { if (!cond) fails.push(label); };
+
+const NAME = "A V Ajay Kiran";
+const PROJECTS = ["IR4U", "Pro Studio X", "Vigilare", "Recytronics", "eRevival",
+  "The Precious Jewels", "Aura Makeover", "Talenttrek", "Clipped AI Studio"];
+const EMPLOYERS = ["DIGIT AI", "Vigilare Bio Pharma", "Logos GmbH", "Vedic IT Solutions"];
+const METRICS = ["+99% website traffic", "+93% new users", "1,400+ users",
+  "180%+ organic traffic growth", "60,900+ video views", "33,248 impressions across 48 posts",
+  "2,534 new users"];
+
+const text = html.replace(/<[^>]+>/g, " ").replace(/&#\d+;|&[a-z]+;/gi, " ").replace(/\s+/g, " ");
+
+// ── document ──────────────────────────────────────────────────────────────────
+// Decode entities before measuring: Astro escapes "&" to "&amp;", and a title limit is
+// about what a browser (and a search result) renders, not about raw source bytes.
+const decode = (s) => s.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+  .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&#x27;/gi, "'");
+
+ok(/<html lang="en"/.test(html), '<html lang="en">');
+const title = decode((html.match(/<title>([^<]*)<\/title>/) || [])[1] || "");
+ok(title.includes(NAME), "title contains the name");
+ok(title.length > 0 && title.length <= 60, `title <= 60 chars (is ${title.length})`);
+
+const desc = decode((html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || "");
+ok(desc.length >= 120 && desc.length <= 158, `description 120-158 chars (is ${desc.length})`);
+ok(desc.includes(NAME), "description contains the name");
+
+ok(/<link rel="canonical" href="https:\/\/www\.designjoom\.com\/"/.test(html), "canonical is the primary URL");
+
+// ── social ────────────────────────────────────────────────────────────────────
+for (const [attr, val] of [
+  ["og:title", title], ["og:description", desc], ["og:type", null],
+  ["og:url", "https://www.designjoom.com/"], ["og:site_name", null],
+  ["og:image", null], ["og:image:width", "1200"], ["og:image:height", "630"],
+]) {
+  const m = html.match(new RegExp(`property="${attr}" content="([^"]*)"`));
+  ok(!!m, `${attr} present`);
+  // decode: attributes are HTML-escaped, so "&" arrives as "&amp;" and would never equal
+  // the decoded <title>. Compare what a scraper actually parses.
+  if (m && val) ok(decode(m[1]) === val, `${attr} matches the canonical value`);
+}
+ok(/name="twitter:card" content="summary_large_image"/.test(html), "twitter:card=summary_large_image");
+const ogImage = (html.match(/property="og:image" content="([^"]*)"/) || [])[1] || "";
+ok(ogImage.startsWith("https://"), "og:image is an absolute URL");
+
+// ── crawler-visible content ───────────────────────────────────────────────────
+ok((html.match(/<h1[\s>]/g) || []).length === 1, "exactly one <h1>");
+const h1 = (html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) || [])[1] || "";
+ok(h1.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").includes(NAME), "h1 contains the full name");
+for (const p of PROJECTS) ok(text.includes(p), `raw HTML contains project: ${p}`);
+for (const e of EMPLOYERS) ok(text.includes(e), `raw HTML contains employer: ${e}`);
+for (const m of METRICS) ok(text.includes(m), `raw HTML contains metric: ${m}`);
+ok(html.includes("<table"), "results table present");
+ok((html.match(/<tr[\s>]/g) || []).length >= 8, "results table has a header + 7 rows");
+
+// ── structured data ───────────────────────────────────────────────────────────
+const blocks = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+ok(blocks.length === 4, `4 JSON-LD blocks (found ${blocks.length})`);
+const nodes = blocks.map((b) => { try { return JSON.parse(b); } catch { fails.push("a JSON-LD block does not parse"); return null; } });
+const person = nodes.find((n) => n && n["@type"] === "Person");
+ok(!!person, "Person node present");
+if (person) {
+  ok(person.name === NAME, "Person.name is the canonical name");
+  ok(Array.isArray(person.alternateName) && person.alternateName.length >= 2, "Person.alternateName has the disambiguation list");
+  ok(Array.isArray(person.sameAs) && person.sameAs.length === 3, "Person.sameAs has 3 profiles");
+  ok(!!person.worksFor?.name, "Person.worksFor names the employer");
+  ok(Array.isArray(person.knowsAbout) && person.knowsAbout.length > 20, "Person.knowsAbout lists the skills");
+}
+const faq = nodes.find((n) => n && n["@type"] === "FAQPage");
+ok(!!faq, "FAQPage node present");
+ok(faq?.mainEntity?.length === 8, `FAQPage has 8 questions (found ${faq?.mainEntity?.length})`);
+ok(!!nodes.find((n) => n && n["@type"] === "WebSite"), "WebSite node present");
+ok(!!nodes.find((n) => n && n["@type"] === "ProfilePage"), "ProfilePage node present");
+
+// ── assets ────────────────────────────────────────────────────────────────────
+if (!arg) {
+  const robots = readFileSync(join("dist", "robots.txt"), "utf8");
+  ok(robots.includes("Sitemap:"), "robots.txt declares a sitemap");
+  ok(/GPTBot/.test(robots) && /ClaudeBot/.test(robots), "robots.txt explicitly allows AI crawlers");
+  ok(!/Disallow: \//.test(robots), "robots.txt does not block the site");
+
+  const llms = readFileSync(join("dist", "llms.txt"), "utf8");
+  ok(llms.includes(NAME), "llms.txt contains the name");
+
+  const sitemapFiles = readdirSync("dist").filter((f) => f.startsWith("sitemap"));
+  ok(sitemapFiles.length > 0, "a sitemap was generated");
+
+  const ogPath = join("dist", "og-image.jpg");
+  if (!existsSync(ogPath)) {
+    fails.push("public/og-image.jpg exists (1200x630)");
+  } else {
+    const img = readFileSync(ogPath);
+    // JPEG SOI marker + parse the SOF0 frame header for real dimensions.
+    ok(img[0] === 0xff && img[1] === 0xd8, "og-image is a real JPEG");
+    let w = 0, h = 0;
+    for (let i = 2; i < img.length - 9;) {
+      if (img[i] !== 0xff) { i++; continue; }
+      const marker = img[i + 1];
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        h = img.readUInt16BE(i + 5); w = img.readUInt16BE(i + 7); break;
+      }
+      i += 2 + img.readUInt16BE(i + 2);
+    }
+    ok(w === 1200 && h === 630, `og-image is 1200x630 (is ${w}x${h})`);
+  }
+
+  // LFS pointers shipped as content — the bug that previously wiped the hero photo.
+  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]);
+  for (const f of walk("dist")) {
+    const b = readFileSync(f);
+    if (b.length < 4096 && b.includes(Buffer.from("git-lfs"))) fails.push(`LFS pointer shipped: ${f}`);
+  }
+}
+
+// ── verification tags must be absent unless configured ────────────────────────
+ok(!/google-site-verification/.test(html) || /google-site-verification" content="[^"]+"/.test(html),
+  "google-site-verification is never emitted empty");
+ok(!/msvalidate/.test(html) || /msvalidate.01" content="[^"]+"/.test(html),
+  "msvalidate.01 is never emitted empty");
+
+if (fails.length) {
+  console.error(`VERIFY FAIL (${fails.length})`);
+  for (const f of fails) console.error(`  ✗ ${f}`);
+  // exitCode, not exit(): process.exit() with undici keep-alive sockets open trips a
+  // libuv assertion on Windows that can mask the real exit status.
+  process.exitCode = 1;
+} else {
+  console.log("VERIFY PASS — head, social, schema, content and assets all present");
+}

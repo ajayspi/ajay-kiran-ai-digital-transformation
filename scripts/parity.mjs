@@ -21,7 +21,10 @@ const text = html.replace(/<[^>]+>/g, " ").replace(/&#\d+;|&[a-z]+;/gi, " ").rep
 
 // ── identity ──────────────────────────────────────────────────────────────────
 ok(text.includes(NAME), `hero/text contains the full name "${NAME}"`);
-ok(!/\bAv\. Ajay\b/i.test(html), 'the "Av. Ajay" form appears nowhere');
+// "Av. Ajay" is allowed inside JSON-LD (it is an intentional alternateName for entity
+// disambiguation) but must never be the displayed name anywhere.
+const withoutSchema = html.replace(/<script type="application\/ld\+json"[\s\S]*?<\/script>/g, "");
+ok(!/\bAv\. Ajay\b/i.test(withoutSchema), 'the "Av. Ajay" form is never displayed');
 ok(!/Rosh/i.test(html), "the string 'Rosh' appears nowhere");
 
 // ── content ───────────────────────────────────────────────────────────────────
@@ -79,6 +82,9 @@ if (process.env.PARITY_DIST) {
 if (fails.length) {
   console.error(`PARITY FAIL (${fails.length})`);
   for (const f of fails) console.error(`  ✗ ${f}`);
-  process.exit(1);
+  // exitCode, not exit(): process.exit() with undici keep-alive sockets open trips a
+  // libuv assertion on Windows that can mask the real exit status.
+  process.exitCode = 1;
+} else {
+  console.log(`PARITY PASS — ${PROJECTS.length} projects, ${EMPLOYERS.length} employers, ${srcs.length} images`);
 }
-console.log(`PARITY PASS — ${PROJECTS.length} projects, ${EMPLOYERS.length} employers, ${srcs.length} images`);

@@ -148,3 +148,9 @@
 # Site-critical images stay raw so Vercel builds never depend on LFS fetch
 src/imports/Screenshot_2026-08-26_034116-2.png filter= diff= merge= text
 src/imports/Screenshot_2026-08-26_034116.png filter= diff= merge= text
+
+# Public-path images must stay raw too — a stable schema: URL (IDENTITY.image in src/seo.ts)
+# depends on /ajay-kiran.png existing as real bytes, not an LFS pointer.
+public/ajay-kiran.png filter= diff= merge= text
+public/og-image.jpg filter= diff= merge= text
+src/imports/projects/*.webp filter= diff= merge= text
