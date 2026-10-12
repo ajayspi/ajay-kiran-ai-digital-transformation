@@ -171,7 +171,7 @@ export const PROJECTS: Project[] = [
     metrics: ["16+ pages redesigned", "6 user interviews", "EPR architecture", "8 weeks"],
     tags: ["UX Research", "B2B", "Information Architecture", "Wireframing"],
     color: P.green,
-    link: "https://recytronics.com",
+    link: "https://www.recytronics.com",
   },
   {
     name: "eRevival",
