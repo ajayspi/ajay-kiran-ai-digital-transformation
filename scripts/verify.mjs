@@ -40,6 +40,10 @@ const text = html.replace(/<[^>]+>/g, " ").replace(/&#\d+;|&[a-z]+;/gi, " ").rep
 const decode = (s) => s.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
   .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&#x27;/gi, "'");
 
+// recursive file walk, used for both the thumbnail and LFS-pointer sweeps
+const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+  e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]);
+
 ok(/<html lang="en"/.test(html), '<html lang="en">');
 const title = decode((html.match(/<title>([^<]*)<\/title>/) || [])[1] || "");
 ok(title.includes(NAME), "title contains the name");
@@ -129,9 +133,7 @@ if (!arg) {
   }
 
   // LFS pointers shipped as content — the bug that previously wiped the hero photo.
-  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-    e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]);
-  for (const f of walk("dist")) {
+  for (const f of walk(join(process.cwd(), "dist"))) {
     const b = readFileSync(f);
     if (b.length < 4096 && b.includes(Buffer.from("git-lfs"))) fails.push(`LFS pointer shipped: ${f}`);
   }
@@ -142,6 +144,38 @@ ok(!/google-site-verification/.test(html) || /google-site-verification" content=
   "google-site-verification is never emitted empty");
 ok(!/msvalidate/.test(html) || /msvalidate.01" content="[^"]+"/.test(html),
   "msvalidate.01 is never emitted empty");
+
+// ── project screenshots ───────────────────────────────────────────────────────
+// A card with a typo'd image slug must fail the build (Projects.astro throws), and an
+// LFS pointer or a stock image standing in for real work must never reach dist/.
+// Vite hashes and flattens asset paths, so match the hashed name and recover the slug
+// from it rather than assuming the source directory survives into dist/.
+const shots = [...html.matchAll(/<img[^>]+src="\/_astro\/([a-z0-9-]+)\.[A-Za-z0-9_-]+\.webp"[^>]*>/g)];
+ok(shots.length === 9, `9 project thumbnails rendered (found ${shots.length})`);
+for (const m of shots) {
+  const slug = m[1];
+  ok(/loading="lazy"/.test(m[0]), `thumbnail is lazy-loaded: ${slug}`);
+  ok(/decoding="async"/.test(m[0]), `thumbnail has decoding=async: ${slug}`);
+  ok(/width="\d+"[^>]*height="\d+"/.test(m[0]) || /height="\d+"[^>]*width="\d+"/.test(m[0]),
+    `thumbnail has explicit dimensions (no CLS): ${slug}`);
+}
+const webps = new Set(shots.map((m) => m[1]));
+ok(webps.size === 9, `9 distinct thumbnails (found ${webps.size})`);
+
+if (!arg) {
+  // normalize Windows separators so the pattern below is not platform-dependent
+  const shipped = walk(join(process.cwd(), "dist")).map((f) => f.replace(/\\/g, "/"));
+  for (const slug of webps) {
+    // dist filenames are content-hashed: <slug>.<hash>.webp
+    const file = shipped.find((f) => new RegExp(`/${slug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\.[A-Za-z0-9_-]+\\.webp$`).test(f));
+    if (!file) { fails.push(`thumbnail shipped: ${slug}.webp`); continue; }
+    const buf = readFileSync(file);
+    ok(buf.length > 3000, `thumbnail has real bytes (${buf.length}): ${slug}.webp`);
+    // RIFF....WEBP magic — catches a renamed PNG and any LFS pointer.
+    ok(buf.slice(0, 4).toString() === "RIFF" && buf.slice(8, 12).toString() === "WEBP",
+      `thumbnail is real webp: ${slug}.webp`);
+  }
+}
 
 if (fails.length) {
   console.error(`VERIFY FAIL (${fails.length})`);

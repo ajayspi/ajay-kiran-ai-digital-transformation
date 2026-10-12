@@ -133,6 +133,10 @@ export interface Project {
   tags: string[];
   color: string;
   link: string;
+  /** screenshot slug -> src/imports/projects/<slug>.webp (resolved in Projects.astro) */
+  image: string;
+  /** what the thumbnail actually shows — used for the alt text, kept honest */
+  imageAlt: string;
 }
 
 export const PROJECTS: Project[] = [
@@ -145,6 +149,8 @@ export const PROJECTS: Project[] = [
     tags: ["AI Content", "SEO", "UX", "WhatsApp", "GA4"],
     color: P.blue,
     link: "https://ir4ubyram.com",
+    image: "ir4u",
+    imageAlt: "IR4U — interventional radiology homepage hero",
   },
   {
     name: "Pro Studio X",
@@ -154,6 +160,8 @@ export const PROJECTS: Project[] = [
     tags: ["AI Product", "LLM Workflows", "Automation", "UX Architecture"],
     color: P.violet,
     link: "https://github.com/ajayspi/ProstudioX-v1",
+    image: "pro-studio-x",
+    imageAlt: "Pro Studio X GitHub repository card",
   },
   {
     name: "Vigilare",
@@ -163,6 +171,8 @@ export const PROJECTS: Project[] = [
     tags: ["UX Strategy", "Brand", "Healthcare", "Design Systems"],
     color: P.cyan,
     link: "https://www.vigilarebp.com",
+    image: "vigilare",
+    imageAlt: "Vigilare Bio Pharma — regulatory affairs homepage",
   },
   {
     name: "Recytronics",
@@ -172,6 +182,8 @@ export const PROJECTS: Project[] = [
     tags: ["UX Research", "B2B", "Information Architecture", "Wireframing"],
     color: P.green,
     link: "https://www.recytronics.com",
+    image: "recytronics",
+    imageAlt: "Recytronics — electronics recycling homepage",
   },
   {
     name: "eRevival",
@@ -181,6 +193,8 @@ export const PROJECTS: Project[] = [
     tags: ["B2B", "Digital Strategy", "SEO", "USA Market"],
     color: P.amber,
     link: "https://erevival.com",
+    image: "erevival",
+    imageAlt: "eRevival — electronics and computer recycling homepage",
   },
   {
     name: "The Precious Jewels",
@@ -190,6 +204,8 @@ export const PROJECTS: Project[] = [
     tags: ["Website Design", "Social Media Marketing", "E-commerce", "Luxury"],
     color: P.pink,
     link: "https://thepreciousjewels.com/",
+    image: "precious-jewels",
+    imageAlt: "The Precious Jewels — luxury jewelry storefront",
   },
   {
     name: "Aura Makeover",
@@ -199,6 +215,8 @@ export const PROJECTS: Project[] = [
     tags: ["Web Design", "Local SEO", "Home Services", "Lead Gen"],
     color: P.teal,
     link: "https://aura-makeover.vercel.app",
+    image: "aura-makeover",
+    imageAlt: "Aura Makeover — home makeover services homepage",
   },
   {
     name: "Talenttrek",
@@ -208,6 +226,8 @@ export const PROJECTS: Project[] = [
     tags: ["Next.js", "TypeScript", "Web Development"],
     color: P.orange,
     link: "https://github.com/ajayspi/Talenttrek",
+    image: "talenttrek",
+    imageAlt: "Talenttrek GitHub repository card",
   },
   {
     name: "Clipped AI Studio",
@@ -217,6 +237,8 @@ export const PROJECTS: Project[] = [
     tags: ["AI Video", "Open Source", "Automation"],
     color: P.slate,
     link: "https://github.com/ajayspi/clipped-ai-studio",
+    image: "clipped-ai-studio",
+    imageAlt: "Clipped AI Studio GitHub repository card",
   },
 ];
 
