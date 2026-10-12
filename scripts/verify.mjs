@@ -212,6 +212,9 @@ if (!arg) {
     } catch { /* not a git repo — structural checks below still run */ }
 
     if (filter === "lfs") {
+      ok(!rel.startsWith("src/imports/"),
+        `image under src/imports/ must NOT be LFS-tracked: ${rel} — Vercel does not fetch ` +
+        `LFS objects, so Astro receives a pointer and the build fails with [NoImageMetadata]`);
       let idxBlob = "";
       try {
         idxBlob = execFileSync("git", ["cat-file", "blob", `:${rel}`],
