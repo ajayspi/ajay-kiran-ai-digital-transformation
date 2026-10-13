@@ -35,7 +35,7 @@ export const META = {
 
 // Answer-shaped copy. Every string must survive being lifted out of the page with no context.
 export const ANSWER_INTRO =
-  "A V Ajay Kiran is an AI Growth and Digital Transformation Leader based in Hyderabad, India, with 14+ years of experience spanning AI product development, SEO and performance marketing, UX strategy and workflow automation for clients across India, Germany, the UAE and the USA.";
+  "A V Ajay Kiran is an AI Growth and Digital Transformation Leader based in Hyderabad, India, with 14+ years of experience spanning AI product development, SEO and performance marketing, UX strategy and workflow automation for clients across India, the US and Australia.";
 
 export const COPY = {
   // Verbatim from the current site — moved, not rewritten.
@@ -48,9 +48,9 @@ export const COPY = {
 export const QUICK_FACTS = [
   { label: "Current role", value: "Growth Leader — AI Growth & Digital Strategy Lead at DIGIT AI" },
   { label: "Experience", value: "14+ years across AI, growth, UX and automation" },
-  { label: "Based in", value: "Hyderabad, India · works across the UAE" },
+  { label: "Based in", value: "Hyderabad, India · works across India" },
   { label: "Focus", value: "AI growth · digital transformation · UX strategy" },
-  { label: "Clients served", value: "20+ across India, Germany, the UAE and the USA" },
+  { label: "Clients served", value: "20+ across India, the US and Australia" },
   { label: "Certified", value: "HFI CXA · Generative AI Mastermind · Google Digital Garage" },
 ];
 
@@ -85,7 +85,7 @@ export const FAQ = [
   },
   {
     q: "Where is he based and does he work remotely?",
-    a: "He is based in Hyderabad, India and works with clients in the UAE, Germany, Singapore, the USA and Australia. His roles at Logos GmbH in Berlin and with Vigilare Bio Pharma have been remote and enterprise-facing, so he is comfortable working across time zones and distributed teams.",
+    a: "He is based in Hyderabad, India and works with clients across India, Germany, the US and Australia. His roles at Logos GmbH in Berlin and with Vigilare Bio Pharma have been remote and enterprise-facing, so he is comfortable working across time zones and distributed teams.",
   },
   {
     q: "What AI and growth tools does he use?",

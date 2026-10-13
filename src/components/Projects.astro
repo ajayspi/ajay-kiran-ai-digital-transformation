@@ -3,8 +3,10 @@ import Icon from "./Icon.astro";
 import { PROJECTS } from "../data";
 import type { ImageMetadata } from "astro";
 
-// Real homepage captures (1280x800 -> 800px webp) for the six live sites, GitHub's own
-// OG card for the three repo-only projects. No stock imagery standing in for real work.
+// Real captures for the six live sites, the repo's own workflow artwork for
+// Clipped AI Studio, and a local capture of the running Pro Studio X UI for the
+// two repo-only projects. No stock imagery and no generic GitHub OG placeholders
+// standing in for real work.
 import ir4u from "../imports/projects/ir4u.webp";
 import vigilare from "../imports/projects/vigilare.webp";
 import recytronics from "../imports/projects/recytronics.webp";
@@ -54,7 +56,7 @@ if (missing.length) throw new Error(`Projects.astro: no screenshot for ${missing
                tabindex="-1" aria-hidden="true">
               <img src={shot.src} alt={p.imageAlt} width={shot.width} height={shot.height}
                    loading="lazy" decoding="async" />
-              <span class="shot-badge">Live site</span>
+              <span class="shot-badge">{p.link.includes("github.com") ? "GitHub repo" : "Live site"}</span>
             </a>
 
             <div class="card-top">

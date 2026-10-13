@@ -161,7 +161,7 @@ export const PROJECTS: Project[] = [
     color: P.violet,
     link: "https://github.com/ajayspi/ProstudioX-v1",
     image: "pro-studio-x",
-    imageAlt: "Pro Studio X GitHub repository card",
+    imageAlt: "Pro Studio X app — faceless finance Shorts generation form",
   },
   {
     name: "Vigilare",
@@ -238,7 +238,7 @@ export const PROJECTS: Project[] = [
     color: P.slate,
     link: "https://github.com/ajayspi/clipped-ai-studio",
     image: "clipped-ai-studio",
-    imageAlt: "Clipped AI Studio GitHub repository card",
+    imageAlt: "Clipped AI Studio — neon scissors and film artwork from the repo",
   },
 ];
 
